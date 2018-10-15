@@ -1,4 +1,6 @@
 from grafo_adj_nao_dir import Grafo
+import math
+
 #funcao auxiliar
 def organizaLista(verts, lista):
     lista_organizada = []
@@ -71,32 +73,27 @@ def arestas_sobre_vertice(g: Grafo, vert):
 
     return lista_aresta
 
-
 def eh_completo(g: Grafo):
-    N = g.N
-    M = g.M
     cont = 0
-    for i in range(len(M)):
-        for j in range(len(M[i])):
-            if(i != j and M[i][j] != '-' and M[i][j] > 0):
+    for i in range(len(g.M)):
+        for j in range(len(g.M)):
+            if (g.M[i][j] != '-' and i != j and g.M[i][j] > 0):
                 cont += 1
-
-    ref = (len(N)**2 - len(N))
-
-    if (cont == ref):
+    referencia = math.factorial(len(g.N)-1)
+    if (cont == referencia or len(g.N) == 1):
         return True
     else:
         return False
 
 
 
-g_c = Grafo(['J', 'C', 'E', 'P', 'M', 'T', 'Z'], [[0,1,0,0,0,0,0],
-                                                        ['-',0,2,2,1,1,0],
-                                                        ['-','-',0,0,0,0,0],
-                                                        ['-','-','-',0,0,0,0],
-                                                        ['-','-','-','-',0,1,0],
-                                                        ['-','-','-','-','-',0,1],
-                                                        ['-','-','-','-','-','-',0]])
+
+
+
+g_c = Grafo(['J', 'C', 'E', 'P'],  [[0,1,1,1],
+                                    ['-',0,1,1],
+                                    ['-','-',0,1],
+                                    ['-','-','-',0]])
 print(g_c)
 
 print(vertices_nao_adjacentes(g_c))
@@ -106,5 +103,7 @@ print(grau(g_c, 'C'))
 print(ha_paralelas(g_c))
 
 print(arestas_sobre_vertice(g_c, 'J'))
-
 print(eh_completo(g_c))
+
+
+
