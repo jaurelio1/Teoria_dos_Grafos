@@ -85,6 +85,27 @@ def eh_completo(g: Grafo):
     else:
         return False
 
+def percorrer_grafo(g: Grafo, indice, a=[]):
+    a.append(indice)
+    for i in range(len(g.N)):
+        if g.M[i][indice] == '-' and g.M[indice][i] == '-':
+            continue
+        elif ((g.M[indice][i] == '-' and g.M[i][indice] > 0) or (g.M[i][indice] == '-' and g.M[indice][i] > 0)) and i not in a:
+            percorrer_grafo(g, i, a)
+    return a
+
+def se_conexo(g: Grafo):
+    a = []
+    cont = 0
+    for i in range(len(g.N)):
+        if (i not in a):
+            cont += 1
+            a = percorrer_grafo(g, i, a)
+    if (cont > 1):
+        return False
+    else:
+        return True
+
 
 
 
@@ -94,6 +115,8 @@ g_c = Grafo(['J', 'C', 'E', 'P'],  [[0,1,1,1],
                                     ['-',0,1,1],
                                     ['-','-',0,1],
                                     ['-','-','-',0]])
+g_nc = Grafo(['J', 'P'],[[0, 0],
+                         ['-', 0]])
 print(g_c)
 
 print(vertices_nao_adjacentes(g_c))
@@ -105,5 +128,4 @@ print(ha_paralelas(g_c))
 print(arestas_sobre_vertice(g_c, 'J'))
 print(eh_completo(g_c))
 
-
-
+print(se_conexo(g_nc))
