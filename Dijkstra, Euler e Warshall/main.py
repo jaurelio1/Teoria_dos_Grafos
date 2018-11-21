@@ -1,7 +1,11 @@
 from grafo_adj import Grafo
 import math
+from math import inf
 
 #WARSHALL
+
+contConexao = 0
+matrizCaminhos = []
 
 def Warshall(g: Grafo):
     M = g.M.copy()
@@ -134,46 +138,52 @@ def vertices_nao_adjacentes(g: Grafo):
 
     return organizaLista(N, lista_nao_adj)
 
-def Dijkstra(g: Grafo, u, v):
-    proximo = ''
-    anterior = u
+def menor_vertice(g, fi, beta):
+    vertices=g.N
+    minimo = 0
+
+    for v in range(len(vertices)):
+        if (fi[v]==0 and beta[v]<inf):
+            minimo = v
+
+    return minimo
+
+def Dijkstra(g:Grafo, v_inicial, v_final):
     beta = []
-    phi = []
-    pi = []
-    r_linha = ''
-    min = 1000000
-    caminho = [u]
+    phi={}
+    fi = []
+    for i in g.N:
+        beta.append(inf)
+        fi.append(0)
 
-    for i in range(len(g.N)):
-        beta.append(0)
-        phi.append(0)
-        pi.append(0)
+    beta[g.N.index(v_inicial)]=0
+    v = g.N.index(v_inicial)
+    for i in range(len(g.M)):
+        v = menor_vertice(g, fi, beta)
+        fi[v]=1
+        for j in range(len(g.M)):
+            if(fi[j]==0 and g.M[v][j]>0 and beta[j]>beta[v]+g.M[v][j]):
+                beta[j] = beta[v] + g.M[v][j]
+                phi[j] = v
 
-    for i in range(len(g.N)):
-        phi[g.N.index(u)] = 1
-        a = g.N[i]
-        if(g.N[i] != u):
-            beta[g.N.index(g.N[i])] = "inf"
-
-    for i in range(len(g.N)):                                            #onde r é qlq vertice conectado ao anterior
-        if g.existe_aresta(anterior+'-'+g.N[i]) and anterior != g.N[i]: #se existe arco (anterior, r) e não é um laco
-            proximo = g.N[i]
-            if phi[g.N.index(proximo)] == 0 and ( beta[g.N.index(proximo)] == "inf" or
-                                                  beta[g.N.index(proximo)] > beta[g.N.index(anterior)] + 1):
-                beta[g.N.index(proximo)] = beta[g.N.index(anterior)] + 1
-                pi[g.N.index(proximo)] = anterior
-                r_linha = proximo
-
-            if phi[g.N.index(r_linha)] == 0 and beta[g.N.index(r_linha)] != "inf" and beta[g.N.index(r_linha)] < min:
-                min = beta[g.N.index(r_linha)]
-                phi[g.N.index(r_linha)] = 1
-                caminho.append(r_linha)
-                anterior = r_linha
-
-            if anterior != v:
-                continue
+    if phi[g.N.index(v_final)] != None:
+        caminho=list()
+        a = g.N.index(v_final)
+        while a != None:
+            caminho.insert(0, a)
+            a = phi[a]
+            if a==g.N.index(v_inicial):
+                caminho.insert(0, a)
+                break
+        for y in caminho:
+            if y != g.N.index(v_final):
+                print(g.N[y], end="->")
             else:
-                return caminho
+                print(g.N[y])
+    else:
+        print("Não existe um caminho entre os vertices!")
+
+
 
 grafo = Grafo(['A', 'B', 'C', 'D', 'E'], [[0, 1, 0, 0, 1],
                                           [0, 0, 1, 0, 0],
@@ -181,4 +191,5 @@ grafo = Grafo(['A', 'B', 'C', 'D', 'E'], [[0, 1, 0, 0, 1],
                                           [0, 0, 0, 0, 0],
                                           [0, 0, 0, 1, 0]])
 
-print(Dijkstra(grafo, 'A', 'D'))
+
+Dijkstra(grafo, 'A', 'D')
